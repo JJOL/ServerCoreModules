@@ -5,11 +5,13 @@ import java.util.List;
 import me.jjservices.cccontroller.api.utils.PStat;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 
 public class Game {
 
 	private final String name;
 	private final ChatColor nameColor;
+	private Location lobbyLoc;
 	
 	private List<PStat> gameStats;
 	
@@ -24,5 +26,12 @@ public class Game {
 	}
 	public ChatColor getNameColor() {
 		return nameColor;
+	}
+	
+	public void setLobby(Location loc) {
+		lobbyLoc = loc;
+	}
+	public Location getLobbyLocation() {
+		return lobbyLoc;
 	}
 }
