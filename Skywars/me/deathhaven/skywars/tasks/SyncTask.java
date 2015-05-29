@@ -1,23 +1,32 @@
-/*  1:   */ package me.deathhaven.skywars.tasks;
-/*  2:   */ 
-/*  3:   */ import me.deathhaven.skywars.controllers.GameController;
-/*  4:   */ import me.deathhaven.skywars.game.Game;
-/*  5:   */ 
-/*  6:   */ public class SyncTask
-/*  7:   */   implements Runnable
-/*  8:   */ {
-/*  9:   */   private int tickCounter;
-/* 10:   */   
-/* 11:   */   public void run()
-/* 12:   */   {
-/* 13:12 */     for (Game game : GameController.get().getAll()) {
-/* 14:13 */       game.onTick();
-/* 15:   */     }
-/* 16:   */   }
-/* 17:   */ }
+package me.deathhaven.skywars.tasks;
 
-
-/* Location:           C:\Users\JJOL\Desktop\SavesB\DHMaySkywars\plugins\DHSkyWarsDummy.jar
- * Qualified Name:     me.deathhaven.skywars.tasks.SyncTask
- * JD-Core Version:    0.7.0.1
- */
+import me.deathhaven.skywars.controllers.GameController;
+import me.deathhaven.skywars.game.Game;
+
+public class SyncTask implements Runnable {
+
+    //private int tickCounter;
+
+    @Override
+    public void run() {
+        for (Game game : GameController.get().getAll()) {
+            game.onTick();
+        }
+        
+        
+        // Updates All Necesarry Things
+       /* Iterator<GameChangeEvent> iterator = CustomController.get().getEventsQueue().iterator();
+        while(iterator.hasNext()) {
+        	CustomController.get().onGameChange(iterator.next());
+        	iterator.remove();
+        }*/
+
+        // @TODO
+        /*if (tickCounter++ == 10) {
+            if (SkyWars.getDB() != null) {
+                SkyWars.getDB().checkConnection();
+            }
+            tickCounter = 0;
+        }*/
+    }
+}

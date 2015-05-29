@@ -1,77 +1,79 @@
-/*  1:   */ package me.deathhaven.skywars.controllers;
-/*  2:   */ 
-/*  3:   */ import com.google.common.collect.Lists;
-/*  4:   */ import com.sk89q.worldedit.CuboidClipboard;
-/*  5:   */ import java.util.ArrayList;
-/*  6:   */ import java.util.Collection;
-/*  7:   */ import java.util.List;
-/*  8:   */ import java.util.logging.Level;
-/*  9:   */ import java.util.logging.Logger;
-/* 10:   */ import javax.annotation.Nonnull;
-/* 11:   */ import me.deathhaven.skywars.SkyWars;
-/* 12:   */ import me.deathhaven.skywars.game.Game;
-/* 13:   */ import me.deathhaven.skywars.game.GameState;
-/* 14:   */ 
-/* 15:   */ public class GameController
-/* 16:   */ {
-/* 17:   */   private static GameController instance;
-/* 18:20 */   private List<Game> gameList = Lists.newArrayList();
-/* 19:   */   
-/* 20:   */   public Game findEmpty()
-/* 21:   */   {
-/* 22:23 */     for (Game game : this.gameList) {
-/* 23:24 */       if ((game.getState() != GameState.PLAYING) && (!game.isFull())) {
-/* 24:25 */         return game;
-/* 25:   */       }
-/* 26:   */     }
-/* 27:29 */     return create();
-/* 28:   */   }
-/* 29:   */   
-/* 30:   */   public Game create()
-/* 31:   */   {
-/* 32:33 */     CuboidClipboard schematic = SchematicController.get().getRandom();
-/* 33:34 */     Game game = new Game(schematic);
-/* 34:36 */     while (!game.isReady())
-/* 35:   */     {
-/* 36:37 */       String schematicName = SchematicController.get().getName(schematic);
-/* 37:38 */       SkyWars.get().getLogger().log(Level.SEVERE, String.format("Schematic '%s' does not have any spawns set!", new Object[] { schematicName }));
-/* 38:39 */       SchematicController.get().remove(schematicName);
-/* 39:   */       
-/* 40:41 */       schematic = SchematicController.get().getRandom();
-/* 41:42 */       game = new Game(schematic);
-/* 42:   */     }
-/* 43:45 */     this.gameList.add(game);
-/* 44:46 */     return game;
-/* 45:   */   }
-/* 46:   */   
-/* 47:   */   public void remove(@Nonnull Game game)
-/* 48:   */   {
-/* 49:50 */     this.gameList.remove(game);
-/* 50:   */   }
-/* 51:   */   
-/* 52:   */   public void shutdown()
-/* 53:   */   {
-/* 54:54 */     for (Game game : new ArrayList(this.gameList)) {
-/* 55:55 */       game.onGameEnd();
-/* 56:   */     }
-/* 57:   */   }
-/* 58:   */   
-/* 59:   */   public Collection<Game> getAll()
-/* 60:   */   {
-/* 61:60 */     return this.gameList;
-/* 62:   */   }
-/* 63:   */   
-/* 64:   */   public static GameController get()
-/* 65:   */   {
-/* 66:64 */     if (instance == null) {
-/* 67:65 */       return GameController.instance = new GameController();
-/* 68:   */     }
-/* 69:68 */     return instance;
-/* 70:   */   }
-/* 71:   */ }
+package me.deathhaven.skywars.controllers;
 
-
-/* Location:           C:\Users\JJOL\Desktop\SavesB\DHMaySkywars\plugins\DHSkyWarsDummy.jar
- * Qualified Name:     me.deathhaven.skywars.controllers.GameController
- * JD-Core Version:    0.7.0.1
- */
+import com.google.common.collect.Lists;
+import com.sk89q.worldedit.CuboidClipboard;
+
+import javax.annotation.Nonnull;
+
+import me.deathhaven.skywars.SkyWars;
+import me.deathhaven.skywars.game.Game;
+import me.deathhaven.skywars.game.GameState;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+
+public class GameController {
+
+    private static GameController instance;
+    private List<Game> gameList = Lists.newArrayList();
+
+    public Game findEmpty() {
+        for (Game game : gameList) {
+            if (game.getState() != GameState.PLAYING && !game.isFull()) {
+                return game;
+            }
+        }
+
+        return create();
+    }
+
+    public Game create() {
+        CuboidClipboard schematic = SchematicController.get().getRandom();
+        Game game = new Game(schematic);
+
+        while (!game.isReady()) {
+            String schematicName = SchematicController.get().getName(schematic);
+            SkyWars.get().getLogger().log(Level.SEVERE, String.format("Schematic '%s' does not have any spawns set!", schematicName));
+            SchematicController.get().remove(schematicName);
+
+            schematic = SchematicController.get().getRandom();
+            game = new Game(schematic);
+        }
+
+        gameList.add(game);
+        return game;
+    }
+
+    public void remove(@Nonnull Game game) {
+        gameList.remove(game);
+    }
+
+    public void shutdown() {
+        for (Game game : new ArrayList<Game>(gameList)) {
+            game.onGameEnd();
+        }
+    }
+
+    public Collection<Game> getAll() {
+        return gameList;
+    }
+    
+    public int getGameId(Game game) {
+    	for(int i=0; i < gameList.size(); i++) {
+    		if (gameList.get(i) == game) {
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+
+    public static GameController get() {
+        if (instance == null) {
+            return instance = new GameController();
+        }
+
+        return instance;
+    }
+}

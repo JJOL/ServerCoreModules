@@ -1,102 +1,176 @@
-/*  1:   */ package me.deathhaven.skywars.controllers;
-/*  2:   */ 
-/*  3:   */ import java.util.ArrayList;
-/*  4:   */ import java.util.Iterator;
-/*  5:   */ import java.util.List;
-/*  6:   */ import me.deathhaven.skywars.SkyWars;
-/*  7:   */ import me.deathhaven.skywars.utilities.IconMenu;
-/*  8:   */ import me.deathhaven.skywars.utilities.IconMenu.OptionClickEvent;
-/*  9:   */ import me.deathhaven.skywars.utilities.IconMenu.OptionClickEventHandler;
-/* 10:   */ import org.bukkit.Material;
-/* 11:   */ import org.bukkit.entity.Player;
-/* 12:   */ import org.bukkit.event.EventHandler;
-/* 13:   */ import org.bukkit.event.Listener;
-/* 14:   */ import org.bukkit.inventory.ItemStack;
-/* 15:   */ 
-/* 16:   */ public class CustomController
-/* 17:   */   implements Listener
-/* 18:   */ {
-/* 19:18 */   public static List<Player> activePlayers = new ArrayList();
-/* 20:   */   private static CustomController instance;
-/* 21:   */   
-/* 22:   */   public static CustomController get()
-/* 23:   */   {
-/* 24:23 */     if (instance == null) {
-/* 25:24 */       instance = new CustomController();
-/* 26:   */     }
-/* 27:27 */     return instance;
-/* 28:   */   }
-/* 29:   */   
-/* 30:   */   public CustomController()
-/* 31:   */   {
-/* 32:31 */     IconMenu menu = new IconMenu("InfoGUI", 27, new IconMenu.OptionClickEventHandler()
-/* 33:   */     {
-/* 34:   */       public void onOptionClick(IconMenu.OptionClickEvent event)
-/* 35:   */       {
-/* 36:35 */         switch (event.getPosition())
-/* 37:   */         {
-/* 38:   */         }
-/* 39:   */       }
-/* 40:43 */     }, SkyWars.get());
-/* 41:   */     
-/* 42:45 */     ItemStack stack = new ItemStack(Material.GRASS, 1);
-/* 43:   */   }
-/* 44:   */   
-/* 45:   */   public static enum ChangeType
-/* 46:   */   {
-/* 47:50 */     PlayerLeft,  PlayerJoin,  SpectateLeft,  SpectateJoin;
-/* 48:   */   }
-/* 49:   */   
-/* 50:   */   @EventHandler
-/* 51:   */   public void onGameChange(GameChangeEvent e)
-/* 52:   */   {
-/* 53:55 */     switch (e.getChangeType())
-/* 54:   */     {
-/* 55:   */     case PlayerJoin: 
-/* 56:   */       Player localPlayer;
-/* 57:58 */       for (Iterator localIterator = activePlayers.iterator(); localIterator.hasNext(); localPlayer = (Player)localIterator.next()) {}
-/* 58:61 */       break;
-/* 59:   */     case PlayerLeft: 
-/* 60:   */       break;
-/* 61:   */     case SpectateLeft: 
-/* 62:   */       break;
-/* 63:   */     case SpectateJoin: 
-/* 64:   */       break;
-/* 65:   */     }
-/* 66:   */   }
-/* 67:   */   
-/* 68:   */   public class GameChangeEvent
-/* 69:   */   {
-/* 70:   */     private CustomController.ChangeType type;
-/* 71:   */     private Player player;
-/* 72:   */     private String msg;
-/* 73:   */     
-/* 74:   */     public GameChangeEvent(CustomController.ChangeType type, Player player, String msg)
-/* 75:   */     {
-/* 76:83 */       this.type = type;
-/* 77:84 */       this.player = player;
-/* 78:85 */       this.msg = msg;
-/* 79:   */     }
-/* 80:   */     
-/* 81:   */     public CustomController.ChangeType getChangeType()
-/* 82:   */     {
-/* 83:89 */       return this.type;
-/* 84:   */     }
-/* 85:   */     
-/* 86:   */     public Player getPlayer()
-/* 87:   */     {
-/* 88:93 */       return this.player;
-/* 89:   */     }
-/* 90:   */     
-/* 91:   */     public String getMessage()
-/* 92:   */     {
-/* 93:97 */       return this.msg;
-/* 94:   */     }
-/* 95:   */   }
-/* 96:   */ }
+package me.deathhaven.skywars.controllers;
 
-
-/* Location:           C:\Users\JJOL\Desktop\SavesB\DHMaySkywars\plugins\DHSkyWarsDummy.jar
- * Qualified Name:     me.deathhaven.skywars.controllers.CustomController
- * JD-Core Version:    0.7.0.1
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Queue;
+import java.util.function.BiConsumer;
+
+import me.deathhaven.skywars.game.Game;
+import me.deathhaven.skywars.player.GamePlayer;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
+
+public class CustomController implements Listener{
+/*
+	
+	public static CustomController instance; 
+	public static List<Player> openPlayers = new ArrayList<Player>();
+	private Inventory infoMenuInv;
+	private Queue<GameChangeEvent> queue = Queues.newLinkedBlockingQueue();
+	private HashMap<Integer, String> gamePlayers = Maps.newHashMap();
+	private HashMap<Integer, String> gameStates = Maps.newHashMap();
+	
+	
+	public static CustomController get() {
+		if(instance == null) {
+			instance = new CustomController();
+		}
+		return instance;
+	}
+	
+	public CustomController() {
+        
+		
+		
+        ItemStack stack = new ItemStack(Material.GRASS,1);
+       // menu.setOption(0, new It, name, info)
+	}
+	
+	public Queue<GameChangeEvent> getEventsQueue() {
+		return queue;
+	}
+	
+	public void addEvent(GameChangeEvent e) {
+		queue.add(e);
+	}
+	
+	
+	public enum ChangeType {
+		PlayerLeft, PlayerJoin, SpectateLeft, SpectateJoin, GameStarts, GameEnds
+		
+	}
+
+	public void setIndicator(int pos, ItemStack item) {
+    	infoMenuInv.setItem(pos, item);
+    }
+	
+	@EventHandler
+	public void onGameChange(GameChangeEvent e) {
+		
+		final Game game = e.getGame();
+		int id = e.getData();
+		
+		switch (e.getChangeType()) 
+		{
+		case GameStarts:
+		case GameEnds:
+			
+			ItemStack[] shiftingGames = new ItemStack[GameController.get().getAll().size()-1];
+			ItemStack[] icons = infoMenuInv.getContents();
+			for(int ii = id; ii < infoMenuInv.getContents().length; ) {
+				infoMenuInv.setItem(ii, infoMenuInv.getItem(++ii));
+			}
+				
+			// Add or Remove Game
+			// moves Items By One
+			
+			
+			
+			break;
+		default:
+			// Change Indicator
+			
+			setIndicator(key, pos, item);
+		}
+	}
+	
+	public ItemStack getItemDescription(int n, Game g) {
+		ItemStack showItem = new ItemStack(Material.BOW);
+		ItemMeta im = showItem.getItemMeta();
+		im.setDisplayName("Skywars Game #"+n);
+		im.setLore(getIconGameLore(g));
+				
+		showItem.setItemMeta(im);
+		return showItem;
+	}
+	
+	public List<String> getIconGameLore(Game g) {
+		
+		List<String> lore = new ArrayList<>();
+		
+		lore.add("§4§lState §7>>  §c"+g.getState().toString());
+		// Add Players
+		lore.add("§4§l(Players)");
+		for(GamePlayer p : g.getPlayers()) {
+			lore.add(p.getBukkitPlayer().getName());
+		}
+		// Add Spectators		
+		lore.add("§4§l(Spectators)");
+		for(GamePlayer p : g.getAllSpectators()) {
+			lore.add(p.getBukkitPlayer().getName());
+		}
+		
+		return lore;
+	}
+	
+	private void updateInfoIconMenu() {
+		
+		int gameIndicator;
+		
+		ItemStack stack = getItemDescription(game);
+		
+		setIndicator()
+		
+	}
+	
+	public class GameChangeEvent {
+
+		
+		private ChangeType type;
+		private Player player;
+		private String msg;
+		private int data;
+		private Game game;
+		
+		public GameChangeEvent(ChangeType type, Player player, String  msg, Game game, int data) {
+			this.type   = type;
+			this.player = player;
+			this.msg    = msg;
+			this.data   = data;
+			this.game   = game;
+		}
+		
+		public ChangeType getChangeType() {
+			return type;
+		}
+		
+		public Player getPlayer() {
+			return player;
+		}
+		
+		public String getMessage() {
+			return msg;
+		}
+		
+		public int getData() {
+			return data;
+		}
+		
+		public Game getGame() {
+			return game;
+		}
+		
+	}*/
+	
+	
+}
