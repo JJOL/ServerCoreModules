@@ -18,8 +18,11 @@ public class LeaveCommand implements CommandExecutor {
 
         if (!gamePlayer.isPlaying()) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.not-in-game"));
-        } else {
+        } else if (!gamePlayer.isSpectating()){
+        	
             gamePlayer.getGame().onPlayerLeave(gamePlayer);
+        } else {
+        	gamePlayer.getGame().onSpectatorLeave(gamePlayer);
         }
 
         return true;

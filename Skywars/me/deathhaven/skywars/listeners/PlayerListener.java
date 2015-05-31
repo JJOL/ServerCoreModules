@@ -43,7 +43,10 @@ public class PlayerListener implements Listener {
         GamePlayer gamePlayer = PlayerController.get().get(player);
 
         if (gamePlayer.isPlaying()) {
-            gamePlayer.getGame().onPlayerLeave(gamePlayer);
+        	if(gamePlayer.isSpectating())
+        		gamePlayer.getGame().onSpectatorLeave(gamePlayer);
+        	else
+        		gamePlayer.getGame().onPlayerLeave(gamePlayer);
         }
 
         gamePlayer.save();
@@ -110,7 +113,7 @@ public class PlayerListener implements Listener {
             event.setFormat(event.getFormat().replace("[score]", String.valueOf(gamePlayer.getScore())));
 
             if (gamePlayer.isPlaying()) {
-            	
+            	// Chat Local Game
                 for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext();) {
                     GamePlayer gp = PlayerController.get().get(iterator.next());
 
@@ -120,6 +123,7 @@ public class PlayerListener implements Listener {
                 }
 
             } else {
+            	// Chat Lobby
                 for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext();) {
                     GamePlayer gp = PlayerController.get().get(iterator.next());
 
@@ -139,6 +143,8 @@ public class PlayerListener implements Listener {
         if (prefix == null) {
             prefix = "";
         }
+        
+        ////////////////////////////////////////////////////////////////////////
         String message = new Messaging.MessageFormatter()
                 .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))
                 .setVariable("player", player.getDisplayName())
@@ -147,10 +153,18 @@ public class PlayerListener implements Listener {
                 .format("chat.local");
         event.setCancelled(true);
 
-        if (gamePlayer.isPlaying()) {
+        if (gamePlayer.isPlaying() || (gamePlayer.isSpectating() && gamePlayer.hasSpectatingAccess()) ) {
+        	
+        	// Local Chat <---
             gamePlayer.getGame().sendMessage(message);
 
         } else {
+        	
+        	//!isPlaying or !isSpectating or !hasAccess
+        	
+        	// Lobby Chat <---
+        	if(gamePlayer.isSpectating())
+        		return;
             for (GamePlayer gp : PlayerController.get().getAll()) {
                 if (!gp.isPlaying()) {
                     gp.getBukkitPlayer().sendMessage(message);
@@ -167,7 +181,7 @@ public class PlayerListener implements Listener {
         if (gamePlayer.isPlaying()) {
             String command = event.getMessage().split(" ")[0].toLowerCase();
 
-            if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command)) {
+            if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command) && !gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
                 event.setCancelled(true);
                 player.sendMessage( new Messaging.MessageFormatter().withPrefix().format("error.cmd-disabled"));
             }
@@ -205,7 +219,7 @@ public class PlayerListener implements Listener {
         if (gP == null) {
             return;
         }
-        if (!gP.isPlaying() || gP.isSpectating()) {
+        if (!gP.isPlaying()) {
             return;
         }
         Vector minVec = gP.getGame().getMinLoc();
@@ -225,7 +239,7 @@ public class PlayerListener implements Listener {
         if (gP == null) {
             return;
         }
-        if (!gP.isPlaying() || gP.isSpectating()) {
+        if (!gP.isPlaying()) {
             return;
         }
         if (e.isFlying()) {
@@ -243,10 +257,10 @@ public class PlayerListener implements Listener {
         if (gP == null) {
             return;
         }
-        if (!gP.isPlaying() || gP.isSpectating()) {
+        if (!gP.isPlaying()) {
             return;
         }
-        if (!e.getNewGameMode().equals(GameMode.SURVIVAL)) {
+        if (!e.getNewGameMode().equals(GameMode.SURVIVAL) && !(gP.isSpectating()) ) {
             e.setCancelled(true);
             e.getPlayer().setGameMode(GameMode.SURVIVAL);
             e.getPlayer().sendMessage(new Messaging.MessageFormatter().withPrefix()

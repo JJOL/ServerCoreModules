@@ -24,11 +24,13 @@ public class GamePlayer {
     private boolean skipFireTicks;
     private ItemStack[] savedInventoryContents = null;
     private ItemStack[] savedArmorContents = null;
+    private boolean hasSpectatingAccess;
 
     public GamePlayer(Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
         this.playerName = bukkitPlayer.getName();
         this.spectating = false;
+        this.hasSpectatingAccess = false;
         DataStorage.get().loadPlayer(this);
     }
 
@@ -192,4 +194,18 @@ public class GamePlayer {
             bukkitPlayer.updateInventory();
         }
     }
+    
+    public boolean hasSpectatingAccess() {
+    	return hasSpectatingAccess;
+    }
+    
+    public void setHasSpectatingAccess(boolean b) {
+    	hasSpectatingAccess = b;
+    }
+    
+    public void toggleSpectatingAccess() {
+    	setHasSpectatingAccess(!hasSpectatingAccess());
+    }
+    
+    
 }
