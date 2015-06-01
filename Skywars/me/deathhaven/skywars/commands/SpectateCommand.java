@@ -17,7 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandPermissions("skywars.command.vote")
+@CommandPermissions("skywars.command.spectate")
 @CommandDescription("Lets you Join a Game as a Spectator")
 public class SpectateCommand implements CommandExecutor{
 
@@ -31,11 +31,11 @@ public class SpectateCommand implements CommandExecutor{
 			sender.sendMessage("Usage: /sw spectate <#gameid|player|toggle>");
 			return true;
 		}
-		sender.sendMessage("ARGS:" + args.length);
 		
 		List<Game> games = (ArrayList<Game>)GameController.get().getAll();
 		if(games.size()==0) {
-			sender.sendMessage("§c§lNo Active Games!");
+			sender.sendMessage(new Messaging.MessageFormatter().
+					format("error.no-active-games"));
 			return true;
 		}
 		Game game;
@@ -47,30 +47,44 @@ public class SpectateCommand implements CommandExecutor{
 			
 			info = CustomController.getAllGameInfo(gId);
 			
-			if(gId >= 0 && gId < games.size()) {	
-				
+			if(gId <= 0 && gId > games.size()) {
+				sender.sendMessage(new Messaging.MessageFormatter()
+									.format("error.not-valid-gameid"));	
+				return true;
 			}
 		} else if (SkyWars.get().getServer().getPlayer(args[1]) != null) {
 			Player target = SkyWars.get().getServer().getPlayer(args[1]);
 			info = CustomController.getGameInfo(PlayerController.get().get(target) );
 			if(info.gId == -1) {
-				sender.sendMessage("Player ["+target.getName()+"] is in lobby!");
+				sender.sendMessage(new Messaging.MessageFormatter()
+										.format("cmd.player-in-lobby"));
 				return true;
 			}
 		
 		} else if(args[1].equalsIgnoreCase("toggle") && player.hasPermission("skywars.command.spectate.toggle")) {
-			PlayerController.get().get(player).toggleSpectatingAccess();
-			sender.sendMessage("Command Access Toggled!");
+			
+			GamePlayer gPlayer = PlayerController.get().get(player);
+			gPlayer.toggleSpectatingAccess();
+			if(gPlayer.hasSpectatingAccess()) {
+				sender.sendMessage(new Messaging.MessageFormatter()
+										.format("cmd.spectate-toggle-on"));
+			} else {
+				sender.sendMessage(new Messaging.MessageFormatter()
+										.format("cmd.spectate-toggle-off"));
+			}
 			return true;
 		} else {
-			sender.sendMessage("§4§l[ERROR] §f§lNot Valid Identifier ("
-					+ args[2] + ")");
+			sender.sendMessage(new Messaging.MessageFormatter()
+					.setVariable("player", args[1])
+					.format("error.not-valid-playerid"));
 			return true;
 		}
 		game = games.get(info.gId);
 		game.onSpectatorJoin(PlayerController.get().get(player));
-		sender.sendMessage(new Messaging.MessageFormatter().withPrefix()
-				.format("Spectating Game... #"+info.gId));
+		sender.sendMessage(new Messaging.MessageFormatter()
+							.setVariable("gameid", String.valueOf(info.gId))
+							.format("game.spectator-join")
+						);
 		
 		
 		

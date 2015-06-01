@@ -27,6 +27,12 @@ public class EntityListener implements Listener {
         Player player = (Player) event.getEntity();
         GamePlayer gamePlayer = PlayerController.get().get(player);
         
+        if(gamePlayer.isSpectating()) {
+        	gamePlayer.getGame().spawnSpectator(gamePlayer); 
+        	event.setCancelled(true);
+        	return;
+        }
+        
         if (event.getCause() == DamageCause.FIRE_TICK && gamePlayer.shouldSkipFireTicks()) {
             player.setFireTicks(0);
             event.setCancelled(true);

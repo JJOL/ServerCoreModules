@@ -9,6 +9,7 @@ import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.game.GameInfo;
 import me.deathhaven.skywars.player.GamePlayer;
+import me.deathhaven.skywars.utilities.Messaging;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,7 +48,8 @@ public class InfoCommand implements CommandExecutor {
 
 					List<Game> activeGames = getGames();
 					if(activeGames.size()==0) {
-						sender.sendMessage("§c§lNo Active Games!");
+						sender.sendMessage(new Messaging.MessageFormatter().
+								format("error.no-active-games"));
 						return true;
 					}
 
@@ -64,8 +66,10 @@ public class InfoCommand implements CommandExecutor {
 						gId = Integer.valueOf(args[2]);
 
 						if (gId < 0 || gId > activeGames.size()) {
-							sender.sendMessage("§4§l[ERROR] §f§lNot Valid Game ID! ["
-									+ args[2] + "]");
+							sender.sendMessage( new Messaging.MessageFormatter()
+								.setVariable("gameid", args[2])
+								.format("error.not-valid-gameid")
+							  );
 							return true;
 						}
 						info = CustomController.getAllGameInfo(gId);
@@ -74,12 +78,15 @@ public class InfoCommand implements CommandExecutor {
 						Player target = SkyWars.get().getServer().getPlayer(args[2]);
 						info = CustomController.getAllGameInfo(PlayerController.get().get(target));
 						if(info.gId == -1) {
-							sender.sendMessage("Player ["+target.getName()+"] is in lobby!");
+							sender.sendMessage(new Messaging.MessageFormatter()
+												.format("cmd.player-in-lobby"));
 							return true;
 						}
 					} else {
-						sender.sendMessage("§4§l[ERROR] §f§lNot Valid Identifier ("
-								+ args[2] + ")");
+						sender.sendMessage(new Messaging.MessageFormatter()
+							.setVariable("player", args[2])
+							.format("error.not-valid-playerid")
+						  );
 						return true;
 					}
 

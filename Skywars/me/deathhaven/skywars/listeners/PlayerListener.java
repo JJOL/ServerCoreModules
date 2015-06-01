@@ -58,7 +58,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         final GamePlayer gamePlayer = PlayerController.get().get(player);
 
-        if (gamePlayer.isPlaying()) {
+        if (gamePlayer.isPlaying() && !gamePlayer.isSpectating()) {
             event.setRespawnLocation(PluginConfig.getLobbySpawn());
 
             if (PluginConfig.saveInventory()) {
@@ -153,18 +153,21 @@ public class PlayerListener implements Listener {
                 .format("chat.local");
         event.setCancelled(true);
 
-        if (gamePlayer.isPlaying() || (gamePlayer.isSpectating() && gamePlayer.hasSpectatingAccess()) ) {
+        if (gamePlayer.isPlaying()) {
         	
         	// Local Chat <---
-            gamePlayer.getGame().sendMessage(message);
+        	if(gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
+        		// Do Spectator Chat!
+        		gamePlayer.getGame().sendSpectatorMessage(message);
+        	} else {
+        		gamePlayer.getGame().sendMessage(message);
+        	}
+        	
+            
 
         } else {
         	
-        	//!isPlaying or !isSpectating or !hasAccess
-        	
         	// Lobby Chat <---
-        	if(gamePlayer.isSpectating())
-        		return;
             for (GamePlayer gp : PlayerController.get().getAll()) {
                 if (!gp.isPlaying()) {
                     gp.getBukkitPlayer().sendMessage(message);
@@ -181,7 +184,7 @@ public class PlayerListener implements Listener {
         if (gamePlayer.isPlaying()) {
             String command = event.getMessage().split(" ")[0].toLowerCase();
 
-            if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command) && !gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
+            if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command) && gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
                 event.setCancelled(true);
                 player.sendMessage( new Messaging.MessageFormatter().withPrefix().format("error.cmd-disabled"));
             }

@@ -145,7 +145,7 @@ public class Game {
         return maxLoc;
     }
 
-    public void onPlayerJoin(GamePlayer gamePlayer) {
+	public void onPlayerJoin(GamePlayer gamePlayer) {
         Player player = gamePlayer.getBukkitPlayer();
 
         int id = getFistEmpty();
@@ -210,12 +210,16 @@ public class Game {
     public void onSpectatorJoin(GamePlayer player) {
     	
     	spectators.add(player);
-    	Player bPlayer = player.getBukkitPlayer();
     	//bPlayer.setFlying(true);
-    	bPlayer.setGameMode(GameMode.SPECTATOR);
     	player.setGame(this);
     	player.setSpectating(true);
-    	bPlayer.teleport(getSpawn(0).clone().add(0.5, 0.5, 0.5));
+    	spawnSpectator(player);
+    }
+    
+    public void spawnSpectator(GamePlayer gPlayer) {
+    	Player player = gPlayer.getBukkitPlayer();
+    	player.setGameMode(GameMode.SPECTATOR);
+    	player.teleport(getSpawn(0).clone().add(0.5, 0.5, 0.5));
     }
     
     public void onSpectatorLeave(GamePlayer player) {
@@ -536,6 +540,12 @@ public class Game {
             gamePlayer.getBukkitPlayer().sendMessage(message);
         }
         for(GamePlayer gamePlayer : getAllSpectators()) {
+        	gamePlayer.getBukkitPlayer().sendMessage(message);
+        }
+    }
+    
+    public void sendSpectatorMessage(String message) {
+    	for(GamePlayer gamePlayer : getAllSpectators()) {
         	gamePlayer.getBukkitPlayer().sendMessage(message);
         }
     }
