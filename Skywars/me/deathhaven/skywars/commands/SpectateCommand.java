@@ -1,7 +1,9 @@
 package me.deathhaven.skywars.commands;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.deathhaven.skywars.SkyWars;
 import me.deathhaven.skywars.controllers.CustomController;
@@ -10,22 +12,32 @@ import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.game.GameInfo;
 import me.deathhaven.skywars.player.GamePlayer;
+import me.deathhaven.skywars.utilities.DebbugUtils;
 import me.deathhaven.skywars.utilities.Messaging;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+
+import com.google.common.collect.Lists;
 
 @CommandPermissions("skywars.command.spectate")
 @CommandDescription("Lets you Join a Game as a Spectator")
-public class SpectateCommand implements CommandExecutor{
+public class SpectateCommand implements CommandExecutor, TabExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
 		
-		//sender.sendMessage("This is the Spectate command that will open spectate options");
+		/*
+		 * Number of Arguments = 2
+		 * args[0] = spectate
+		 * args[1] = argument
+		 * */
+		
+
 		
 		if(args.length < 2) {
 			sender.sendMessage("Usage: /sw spectate <#gameid|player|toggle>");
@@ -38,21 +50,29 @@ public class SpectateCommand implements CommandExecutor{
 					format("error.no-active-games"));
 			return true;
 		}
+		
 		Game game;
 		GameInfo info;
 		Player player = (Player)sender;
+		
 		if (CustomController.checkValidInt(args[1])) {
+			
+			DebbugUtils.get().sendDebbugMC("[SpectateCMD] Argument is A Number : "+args[1]);
 			
 			int gId = Integer.parseInt(args[1]);
 			
-			info = CustomController.getAllGameInfo(gId);
-			
-			if(gId <= 0 && gId > games.size()) {
+			if(gId < 0 || gId > games.size()-1) {
+				DebbugUtils.get().sendDebbugMC("[SpectateCMD] ID didnt pass the test");
 				sender.sendMessage(new Messaging.MessageFormatter()
+									.setVariable("gameid", args[1])
 									.format("error.not-valid-gameid"));	
 				return true;
 			}
-		} else if (SkyWars.get().getServer().getPlayer(args[1]) != null) {
+			DebbugUtils.get().sendDebbugMC("[SpectateCMD] ID Passed the Test!");
+			info = CustomController.getGameInfo(gId);
+			
+		} 
+		else if (SkyWars.get().getServer().getPlayer(args[1]) != null) {
 			Player target = SkyWars.get().getServer().getPlayer(args[1]);
 			info = CustomController.getGameInfo(PlayerController.get().get(target) );
 			if(info.gId == -1) {
@@ -91,6 +111,19 @@ public class SpectateCommand implements CommandExecutor{
 		return true;
 	}
 	
-	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command arg1,
+			String arg2, String[] args) {
+		
+		Set<String> matches = new HashSet<>();
+		
+		String search = args[1].toLowerCase();
+		for (String name : new String[]{"0", "toggle"}) {
+			if(name.startsWith( search )) {
+				matches.add(name);
+			}
+		}
+		return Lists.newArrayList(matches);
+	}
 
 }

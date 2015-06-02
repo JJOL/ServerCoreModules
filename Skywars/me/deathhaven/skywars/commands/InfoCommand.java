@@ -1,6 +1,8 @@
 package me.deathhaven.skywars.commands;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.deathhaven.skywars.SkyWars;
 import me.deathhaven.skywars.controllers.CustomController;
@@ -14,11 +16,14 @@ import me.deathhaven.skywars.utilities.Messaging;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+
+import com.google.common.collect.Lists;
 
 @CommandDescription("You can use this command to get nodes of information")
 @CommandPermissions("skywars.command.getinfo")
-public class InfoCommand implements CommandExecutor {
+public class InfoCommand implements CommandExecutor, TabExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
@@ -39,7 +44,9 @@ public class InfoCommand implements CommandExecutor {
 
 				if (args[1].equalsIgnoreCase("games")) {
 
-					sender.sendMessage("Active Games: ");
+					sender.sendMessage(new Messaging.MessageFormatter()
+										.setVariable("size", String.valueOf(getGames().size()))
+										.format("cmd.active-games"));
 					for (int i = 0; i < getGames().size(); i++) {
 						sender.sendMessage("Game #" + i);
 					}
@@ -129,6 +136,21 @@ public class InfoCommand implements CommandExecutor {
 
 	private List<Game> getGames() {
 		return (List<Game>) GameController.get().getAll();
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command arg1,
+			String arg2, String[] args) {
+		
+		Set<String> matches = new HashSet<>();
+		
+		String search = args[1].toLowerCase();
+		for (String name : new String[]{"games", "game", "player"}) {
+			if(name.startsWith( search )) {
+				matches.add(name);
+			}
+		}
+		return Lists.newArrayList(matches);
 	}
 
 

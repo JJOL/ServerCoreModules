@@ -119,6 +119,10 @@ public class CustomController{
 		return true;
 	}
 	
+	public static List<Game> getGames() {
+		return (List<Game>) GameController.get().getAll();
+	}
+	
 
 	static public GameInfo getAllGameInfo(Game game, int id) {
 		if (id == -1) {
@@ -202,5 +206,10 @@ public class CustomController{
 		GameInfo info = new GameInfo(id);
 		info.setSpectators(game.getAllSpectators());
 		return info;
+	}
+	
+	static public boolean validMap(String mapname) {
+		
+		return SchematicController.get().schematicExists(mapname);
 	}
 }

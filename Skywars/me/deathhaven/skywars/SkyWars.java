@@ -25,6 +25,7 @@ import me.deathhaven.skywars.storage.DataStorage;
 import me.deathhaven.skywars.storage.SQLStorage;
 import me.deathhaven.skywars.tasks.SyncTask;
 import me.deathhaven.skywars.utilities.CraftBukkitUtil;
+import me.deathhaven.skywars.utilities.DebbugUtils;
 import me.deathhaven.skywars.utilities.FileUtils;
 import me.deathhaven.skywars.utilities.Messaging;
 import me.deathhaven.skywars.utilities.StringUtils;
@@ -128,6 +129,7 @@ public class SkyWars extends JavaPlugin {
         GameController.get();
         PlayerController.get();
         ChestController.get();
+        DebbugUtils.get();
         if (!PluginConfig.disableKits()) {
             KitController.get();
         }

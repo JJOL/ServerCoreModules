@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class SchematicController {
@@ -137,6 +138,14 @@ public class SchematicController {
         }
 
         return null;
+    }
+    
+    public boolean schematicExists(String name) {
+    	return schematicMap.containsKey(name);
+    }
+    
+    public Set<String> getAllMapNames() {
+    	return schematicMap.keySet();
     }
 
     public void cacheSpawn(CuboidClipboard schematic, int position, Vector location) {

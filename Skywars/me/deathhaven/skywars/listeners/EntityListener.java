@@ -5,6 +5,7 @@ import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.game.GameState;
 import me.deathhaven.skywars.player.GamePlayer;
+import me.deathhaven.skywars.utilities.DebbugUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -30,6 +31,8 @@ public class EntityListener implements Listener {
         if(gamePlayer.isSpectating()) {
         	gamePlayer.getGame().spawnSpectator(gamePlayer); 
         	event.setCancelled(true);
+        	player.sendMessage("Damage Detected!");
+        	//DebbugUtils.get().sendDebbugMC("Spectator was damaged: "+player.getName());
         	return;
         }
         
@@ -62,6 +65,11 @@ public class EntityListener implements Listener {
         Player player = event.getEntity();
         final GamePlayer gamePlayer = PlayerController.get().get(player);
 
+        if(gamePlayer.isSpectating()) {
+        	//DebbugUtils.get().sendDebbugMC("Spectator was safed: "+player.getName());
+        	return;
+        }
+        
         if (!gamePlayer.isPlaying()) {
             return;
         }
