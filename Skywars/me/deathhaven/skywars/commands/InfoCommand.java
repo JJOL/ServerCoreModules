@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import me.deathhaven.skywars.SkyWars;
-import me.deathhaven.skywars.controllers.CustomController;
+import me.deathhaven.skywars.controllers.DataController;
 import me.deathhaven.skywars.controllers.GameController;
 import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
@@ -69,21 +69,21 @@ public class InfoCommand implements CommandExecutor, TabExecutor{
 
 					int gId;
 
-					if (CustomController.checkValidInt(args[2])) {
+					if (DataController.checkValidInt(args[2])) {
 						gId = Integer.valueOf(args[2]);
 
-						if (gId < 0 || gId > activeGames.size()) {
+						if (gId < 0 || gId > activeGames.size()-1) {
 							sender.sendMessage( new Messaging.MessageFormatter()
 								.setVariable("gameid", args[2])
 								.format("error.not-valid-gameid")
 							  );
 							return true;
 						}
-						info = CustomController.getAllGameInfo(gId);
+						info = DataController.getAllGameInfo(gId);
 
 					} else if (SkyWars.get().getServer().getPlayer(args[2]) != null) {
 						Player target = SkyWars.get().getServer().getPlayer(args[2]);
-						info = CustomController.getAllGameInfo(PlayerController.get().get(target));
+						info = DataController.getAllGameInfo(PlayerController.get().get(target));
 						if(info.gId == -1) {
 							sender.sendMessage(new Messaging.MessageFormatter()
 												.format("cmd.player-in-lobby"));

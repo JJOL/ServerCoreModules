@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import me.deathhaven.skywars.SkyWars;
-import me.deathhaven.skywars.controllers.CustomController;
+import me.deathhaven.skywars.controllers.DataController;
 import me.deathhaven.skywars.controllers.GameController;
 import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
@@ -55,7 +55,7 @@ public class SpectateCommand implements CommandExecutor, TabExecutor{
 		GameInfo info;
 		Player player = (Player)sender;
 		
-		if (CustomController.checkValidInt(args[1])) {
+		if (DataController.checkValidInt(args[1])) {
 			
 			DebbugUtils.get().sendDebbugMC("[SpectateCMD] Argument is A Number : "+args[1]);
 			
@@ -69,12 +69,12 @@ public class SpectateCommand implements CommandExecutor, TabExecutor{
 				return true;
 			}
 			DebbugUtils.get().sendDebbugMC("[SpectateCMD] ID Passed the Test!");
-			info = CustomController.getGameInfo(gId);
+			info = DataController.getGameInfo(gId);
 			
 		} 
 		else if (SkyWars.get().getServer().getPlayer(args[1]) != null) {
 			Player target = SkyWars.get().getServer().getPlayer(args[1]);
-			info = CustomController.getGameInfo(PlayerController.get().get(target) );
+			info = DataController.getGameInfo(PlayerController.get().get(target) );
 			if(info.gId == -1) {
 				sender.sendMessage(new Messaging.MessageFormatter()
 										.format("cmd.player-in-lobby"));

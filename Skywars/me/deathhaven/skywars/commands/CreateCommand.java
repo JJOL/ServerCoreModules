@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import me.deathhaven.skywars.controllers.CustomController;
+import me.deathhaven.skywars.controllers.DataController;
 import me.deathhaven.skywars.controllers.GameController;
 import me.deathhaven.skywars.controllers.SchematicController;
 import me.deathhaven.skywars.game.GameConfig;
@@ -44,7 +44,7 @@ public class CreateCommand implements CommandExecutor, TabExecutor {
 		
 		
 		
-		if(CustomController.validMap(mapname)) {
+		if(DataController.validMap(mapname)) {
 			GameConfig config = new GameConfig(
 										"CustomGame", 
 										SchematicController.get().getArena(mapname)

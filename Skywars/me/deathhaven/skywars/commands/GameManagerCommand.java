@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import me.deathhaven.skywars.controllers.CustomController;
+import me.deathhaven.skywars.controllers.DataController;
 import me.deathhaven.skywars.controllers.GameController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.utilities.Messaging;
@@ -39,13 +39,13 @@ public class GameManagerCommand implements CommandExecutor, TabExecutor {
 		
 		if(args[1].equalsIgnoreCase("unload")) {
 			
-			List<Game> activeGames = CustomController.getGames();
+			List<Game> activeGames = DataController.getGames();
 			int gId;
 
-			if (CustomController.checkValidInt(args[2])) {
+			if (DataController.checkValidInt(args[2])) {
 				gId = Integer.valueOf(args[2]);
 
-				if (gId < 0 || gId > activeGames.size()) {
+				if (gId < 0 || gId > activeGames.size()-1) {
 					sender.sendMessage( new Messaging.MessageFormatter()
 						.setVariable("gameid", args[2])
 						.format("error.not-valid-gameid")
