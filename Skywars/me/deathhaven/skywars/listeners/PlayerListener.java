@@ -184,7 +184,8 @@ public class PlayerListener implements Listener {
         if (gamePlayer.isPlaying()) {
             String command = event.getMessage().split(" ")[0].toLowerCase();
 
-            if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command) && gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
+            if (!command.equals("/sw") && !command.equals("/asw") && !PluginConfig.isCommandWhitelisted(command) 
+            		&& gamePlayer.isSpectating() && !gamePlayer.hasSpectatingAccess()) {
                 event.setCancelled(true);
                 player.sendMessage( new Messaging.MessageFormatter().withPrefix().format("error.cmd-disabled"));
             }

@@ -10,6 +10,9 @@ commands:
   skywars:
     aliases: [sw]
     description: Main command of the SkyWars plugin
+  skyadmin: 
+    aliases: [asw]
+    description: Skywars Admin Commands
   global:
     aliases: [g]
     description: Allows you to send a message to all players

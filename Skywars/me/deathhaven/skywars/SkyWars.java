@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import me.deathhaven.skywars.commands.AdminCommand;
 import me.deathhaven.skywars.commands.MainCommand;
 import me.deathhaven.skywars.config.PluginConfig;
 import me.deathhaven.skywars.controllers.ChestController;
@@ -25,7 +26,7 @@ import me.deathhaven.skywars.storage.DataStorage;
 import me.deathhaven.skywars.storage.SQLStorage;
 import me.deathhaven.skywars.tasks.SyncTask;
 import me.deathhaven.skywars.utilities.CraftBukkitUtil;
-import me.deathhaven.skywars.utilities.DebbugUtils;
+import me.deathhaven.skywars.utilities.Debugger;
 import me.deathhaven.skywars.utilities.FileUtils;
 import me.deathhaven.skywars.utilities.Messaging;
 import me.deathhaven.skywars.utilities.StringUtils;
@@ -67,6 +68,7 @@ public class SkyWars extends JavaPlugin {
         new Messaging(this);
 
         getCommand("skywars").setExecutor(new MainCommand());
+        getCommand("skyadmin").setExecutor(new AdminCommand());
         getCommand("global").setExecutor(new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -129,7 +131,7 @@ public class SkyWars extends JavaPlugin {
         GameController.get();
         PlayerController.get();
         ChestController.get();
-        DebbugUtils.get();
+        Debugger.get();
         if (!PluginConfig.disableKits()) {
             KitController.get();
         }

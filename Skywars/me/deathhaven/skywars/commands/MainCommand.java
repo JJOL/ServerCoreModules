@@ -23,17 +23,17 @@ public class MainCommand implements CommandExecutor, TabCompleter{
     private Map<String, CommandExecutor> subCommandMap = Maps.newHashMap();
 
     public MainCommand() {
-        subCommandMap.put("reload", new ReloadCommand());
-        subCommandMap.put("setlobby", new SetLobbyCommand());
+        //subCommandMap.put("reload", new ReloadCommand());
+        //subCommandMap.put("setlobby", new SetLobbyCommand());
         subCommandMap.put("start", new StartCommand());
         subCommandMap.put("leave", new LeaveCommand());
-        subCommandMap.put("score", new ScoreCommand());
+        //subCommandMap.put("score", new ScoreCommand());
         subCommandMap.put("vote", new VoteCommand());
         subCommandMap.put("join", new JoinCommand());
-        subCommandMap.put("spectate", new SpectateCommand());
-        subCommandMap.put("info", new InfoCommand());
-        subCommandMap.put("create", new CreateCommand());
-        subCommandMap.put("manage", new GameManagerCommand());
+        //subCommandMap.put("spectate", new SpectateCommand());
+        //subCommandMap.put("info", new InfoCommand());
+        //subCommandMap.put("create", new CreateCommand());
+        //subCommandMap.put("manage", new GameManagerCommand());
         if (!PluginConfig.disableKits()) {
             subCommandMap.put("kit", new KitCommand());
         }

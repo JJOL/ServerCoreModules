@@ -5,7 +5,7 @@ import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.game.GameState;
 import me.deathhaven.skywars.player.GamePlayer;
-import me.deathhaven.skywars.utilities.DebbugUtils;
+import me.deathhaven.skywars.utilities.Debugger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;

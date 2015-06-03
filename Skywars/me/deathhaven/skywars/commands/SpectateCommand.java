@@ -12,7 +12,7 @@ import me.deathhaven.skywars.controllers.PlayerController;
 import me.deathhaven.skywars.game.Game;
 import me.deathhaven.skywars.game.GameInfo;
 import me.deathhaven.skywars.player.GamePlayer;
-import me.deathhaven.skywars.utilities.DebbugUtils;
+import me.deathhaven.skywars.utilities.Debugger;
 import me.deathhaven.skywars.utilities.Messaging;
 
 import org.bukkit.command.Command;
@@ -57,18 +57,18 @@ public class SpectateCommand implements CommandExecutor, TabExecutor{
 		
 		if (DataController.checkValidInt(args[1])) {
 			
-			DebbugUtils.get().sendDebbugMC("[SpectateCMD] Argument is A Number : "+args[1]);
+			Debugger.get().sendDebbugMC("[SpectateCMD] Argument is A Number : "+args[1]);
 			
 			int gId = Integer.parseInt(args[1]);
 			
 			if(gId < 0 || gId > games.size()-1) {
-				DebbugUtils.get().sendDebbugMC("[SpectateCMD] ID didnt pass the test");
+				Debugger.get().sendDebbugMC("[SpectateCMD] ID didnt pass the test");
 				sender.sendMessage(new Messaging.MessageFormatter()
 									.setVariable("gameid", args[1])
 									.format("error.not-valid-gameid"));	
 				return true;
 			}
-			DebbugUtils.get().sendDebbugMC("[SpectateCMD] ID Passed the Test!");
+			Debugger.get().sendDebbugMC("[SpectateCMD] ID Passed the Test!");
 			info = DataController.getGameInfo(gId);
 			
 		} 
