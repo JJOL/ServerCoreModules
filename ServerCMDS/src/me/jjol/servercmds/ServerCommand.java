@@ -15,6 +15,7 @@ public class ServerCommand extends Command{
 	
 	
 	
+	
 	public ServerCommand(String server, Main core, String msg) {
 		super(server);
 		this.server = server;
@@ -29,7 +30,8 @@ public class ServerCommand extends Command{
 	
 	public void execute(CommandSender sender, String[] strings) {
 		
-		sender.sendMessage(new ComponentBuilder(msg.replaceAll("{name}", server)).color(ChatColor.AQUA).create());
+		
+		sender.sendMessage(new ComponentBuilder(msg.replace("{name}", server)).color(ChatColor.AQUA).create());
 		ProxiedPlayer p = (ProxiedPlayer)sender;
 		p.connect(core.getProxy().getServerInfo(server));		
 		
