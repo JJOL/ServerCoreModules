@@ -1,0 +1,4 @@
+name: ServerCmdsPlugin
+main: me.jjol.servercmds.Main
+version: 1.0
+author: JJOL
