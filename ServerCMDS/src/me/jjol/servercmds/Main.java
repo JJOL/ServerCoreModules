@@ -73,21 +73,23 @@ public class Main extends Plugin {
 	public void onEnable() {
 		getLogger().info("[Simple-Server-Commands] Enabled!");
 		
-		
 		// SAVING Config.yml
 		{
-			File config = new File(getDataFolder()+"/config.yml");
+			File config = new File(System.getProperty("user.dir")+"/cmdsconfig.yml");
 			try {
 				if(config.createNewFile()) {
+					getLogger().info("[ServerCMDS] Creating File!");
 					FileWriter fw = new FileWriter(config.getAbsoluteFile());
 					BufferedWriter bw = new BufferedWriter(fw);
 					bw.write(msgKey+": Connecting to Server {name}");
 					bw.write("\n");
 					bw.write(serversKey+": [hub]");
 					bw.close();
+					getLogger().info("[ServerCMDS] File Created!");
 				}
 			} catch (IOException e) {
 				printError("Error Encountered Saving the Default config.yml File!");
+				e.printStackTrace();
 			}
 		}
 		
@@ -96,7 +98,7 @@ public class Main extends Plugin {
 		List<String> serverList = new ArrayList<String>();
 		
 		{
-			File config = new File(getDataFolder()+"/config.yml");
+			File config = new File(System.getProperty("user.dir")+"/cmdsconfig.yml");
 			InputStream stream;
 			
 			Yaml yaml = new Yaml();
